@@ -20,8 +20,13 @@ class ReqHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
             os.makedirs(filename[1:])
         body = self.rfile.read(clen)
         with open(filename[1:], 'w') as file:
-            file.write(body)
-            print "POST request body written to a file: " + filename
+            try:
+                file.write(body)
+            except IOError:
+                os.rmdir(filename[1:])
+                file.write(body)
+
+            print "POST request body written to a file: " + filename[1:]
 
 reqhandler = ReqHandler
 server = SocketServer.TCPServer(("", PORT), reqhandler)
