@@ -19,7 +19,7 @@ class ReqHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         if not os.path.exists(filename[1:]):
             os.makedirs(filename[1:])
         body = self.rfile.read(clen)
-        with open(filename, 'w') as file:
+        with open(filename[1:], 'w') as file:
             file.write(body)
             print "POST request body written to a file: " + filename
 
