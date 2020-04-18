@@ -5,7 +5,6 @@
 import SimpleHTTPServer
 import SocketServer
 from sys import argv
-import os
 
 PORT = int(argv[1])
 
@@ -16,18 +15,10 @@ class ReqHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
         clen = int(self.headers.getheader('content-length', 0))
         req_path = self.path
         filename = req_path[1:]
-        if not os.path.exists(filename[1:]):
-            os.makedirs(filename[1:])
         body = self.rfile.read(clen)
-        try:
-            with open(filename[1:], 'w') as file:
-                file.write(body)
-                print "POST request body written to a file: " + filename[1:]
-        except IOError:
-            os.rmdir(filename[1:])
-            with open(filename[1:], 'w') as file:
-                file.write(body)
-                print "POST request body written to a file: " + filename[1:]
+        with open(filename, 'w') as file:
+            file.write(body)
+            print "POST request body written to a file: " + filename
 
 reqhandler = ReqHandler
 server = SocketServer.TCPServer(("", PORT), reqhandler)
